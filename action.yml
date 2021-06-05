@@ -2,12 +2,10 @@ name: 'Yak Package Manager Action'
 description: 'Automate publishing using the Yak package manager'
 inputs:
   build-directory:  # path of the build directory
-    description: 'The path to the buil diectory'
+    description: 'The path to the build diectory'
     required: true
     default: './dist'
-  version:
-    description: 'The version of the package'
-    required: true
+
 #runs:
 #  using: 'node12'
 #  main: 'index.js'
@@ -17,13 +15,11 @@ runs:
   using: "composite"
   steps: 
     - run: cd ${{ github.workspace }} && curl -fSLo yak.exe https://files.mcneel.com/yak/tools/latest/yak.exe && .\yak.exe version
-      shell: pwsh
+    - run: ls ${{ github.workspace }}
     - run: ls ${{ inputs.build-directory }}
-      shell: pwsh
-    - run: cd ${{ inputs.build-directory }} && ${{ github.workspace }}\yak.exe build --version "$Env:NBGV_SemVer2" --platform win && cd ${{ github.workspace }}
-      shell: pwsh
+    - run: cd ${{ github.workspace }} && .\yak.exe build
+    - run: ls ${{ inputs.build-directory }}
     - run: cd ${{ github.workspace }} && Get-ChildItem ${{ inputs.build-directory }} -Filter *.yak | ForEach-Object -Process {.\yak.exe push  $_}
-      shell: pwsh
 
 
 
